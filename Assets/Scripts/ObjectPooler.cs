@@ -18,6 +18,7 @@ public class ObjectPooler : MonoBehaviour {
 	#endregion
 
 	private Dictionary<string, Queue<GameObject>> poolDictionary;
+	private Dictionary<string, int> activeItems;
 
 	#region Singleton
 	public static ObjectPooler Instance;
@@ -28,6 +29,7 @@ public class ObjectPooler : MonoBehaviour {
 
 	void Start () {
 		poolDictionary = new Dictionary<string, Queue<GameObject>>();
+		activeItems = new Dictionary<string, int>();
 
 		foreach (Pool pool in pools) {
 			Queue<GameObject> objectPool = new Queue<GameObject>();
@@ -37,6 +39,7 @@ public class ObjectPooler : MonoBehaviour {
 				objectPool.Enqueue(obj);
 			}
 			poolDictionary.Add(pool.key, objectPool);
+			activeItems.Add(pool.key, 0);
 		}
 	}
 
@@ -53,11 +56,26 @@ public class ObjectPooler : MonoBehaviour {
 		// spawn object using interface
 		IPooledObject pooledObject = spawn.GetComponent<IPooledObject>();
 		if(pooledObject != null) {
-			pooledObject.OnObjectSpawn();
+			pooledObject.OnObjectSpawn(key);
 		}
 
 		// add object back too pool for reuse
 		poolDictionary[key].Enqueue(spawn);
+		activeItems[key]++;
 		return spawn;
+	}
+
+	public bool DestroyObject(string key, GameObject obj) {
+		if (!activeItems.ContainsKey(key)) {
+			Debug.LogWarning("Pool object '" + key + "' does not exist");
+			return false;
+		}
+		obj.SetActive(false);
+		activeItems[key]--;
+		return true;
+	}
+
+	public bool IsPoolActive(string key) {
+		return activeItems[key] == 0;
 	}
 }
