@@ -2,9 +2,9 @@
 using System.Collections;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : MonoBehaviour, IPooledObject {
 	#region Variables
-	[SerializeField][Range(1, 10)]
+	[SerializeField][Range(1, 100)]
 	protected int rollSpeed = 1;
 	[SerializeField][Range(0f, 5f)]
 	private float rollDelay = 1f;
@@ -18,7 +18,11 @@ public class Enemy : MonoBehaviour {
     private bool isMoving = false;
 	#endregion
 
-	void Start () {
+	public void OnObjectSpawn() {
+		// stop moving if recycled from object pool
+		isMoving = false;
+		StopAllCoroutines();
+
 		// get cube size
 		cubeSize = GetComponent<Renderer>().bounds.size.x;
 
@@ -67,20 +71,19 @@ public class Enemy : MonoBehaviour {
 		timer = 0;
 	}
 	private void OnTriggerEnter(Collider collider) {
-		Debug.Log("OnCollisionEnter");
-		Debug.Log(collider.gameObject.name);
 		if (collider.gameObject.name == "Wall")
 			CollideWall();
-	}
-	private void OnTriggerStay(Collider collider) {
-		Debug.Log("OnCollisionStay");
-		Debug.Log(collider.gameObject.name);
-		if (collider.gameObject.name == "Wall")
-			CollideWall();
+		//if (collider.gameObject.tag == "enemySlow" || collider.gameObject.tag == "enemyFast") {
+		//	if (collider.gameObject.transform.position.x > gameObject.transform.position.x)
+		//		collider.gameObject.SetActive(false);
+		//	else
+		//		gameObject.SetActive(false);
+		//}
 	}
 
 	private void CollideWall() {
-		Destroy(gameObject);
+		gameObject.SetActive(false);
+		// TODO deal damage to wall
 	}
 
 
@@ -108,5 +111,10 @@ public class Enemy : MonoBehaviour {
 
 	public bool GetIsMoving() {
 		return isMoving;
+	}
+
+	public float GetRollSeconds() {
+		rollDuration = Mathf.Ceil(1.0f / rollSpeed * 100.0f) * 0.01f;
+		return rollDelay + rollDuration;
 	}
 }

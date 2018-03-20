@@ -11,6 +11,8 @@ public class EnemySpawner : MonoBehaviour {
 	[Space]
 
 	[Header("Slow Enemy")]
+	[SerializeField][LabelOverride("Object Pool Key")]
+	private string enemySlowKey;
 	[SerializeField][LabelOverride("Game Object")]
 	private GameObject enemySlow;
 	[SerializeField][LabelOverride("Spawn Delay")]
@@ -19,23 +21,27 @@ public class EnemySpawner : MonoBehaviour {
 	[Space]
 
 	[Header("Fast Enemy")]
+	[SerializeField][LabelOverride("Object Pool Key")]
+	private string enemyFastKey;
 	[SerializeField][LabelOverride("Game Object")]
 	private GameObject enemyFast;
 	[SerializeField][LabelOverride("Spawn Delay")]
 	private float spawnDelayFast = 0.5f;
 	#endregion
-	
+
 	#region Private Variables
+	private ObjectPooler objectPooler;
 	private float timerSlow = 0, timerFast = 0, enemySlowWidth, enemyFastWidth;
     private int gridSize = 1;
     private Vector3 boardSize;
     private Vector3 enemySpawnPoint;
+	private Vector3 enemySlowLastPos, enemyFastLastPos;
 	#endregion
 
-	public delegate void spawnEnemy();
-    public event spawnEnemy onEnemySpawn;
-    // Use this for initialization
+	//public delegate void spawnEnemy();
+ //   public event spawnEnemy onEnemySpawn;
     void Start() {
+		objectPooler = ObjectPooler.Instance;
         Bounds boardBounds = board.GetComponent<Renderer>().bounds;
         boardSize = boardBounds.size;
         enemySlowWidth = enemySlow.GetComponentInChildren<Renderer>().bounds.size.x;
@@ -47,28 +53,35 @@ public class EnemySpawner : MonoBehaviour {
         timerSlow += Time.deltaTime;
         timerFast += Time.deltaTime;
         // spawn enemy after previous enemy has moved + spawn delay
-        if(timerSlow > spawnDelaySlow + enemySlow.GetComponent<Enemy>().GetRollDelay()
-			&& enemySlow.GetComponent<Enemy>().GetIsMoving()) {
+        if(timerSlow > spawnDelaySlow + 2 * enemySlow.GetComponent<Enemy>().GetRollSeconds()) {
 			//spawnEnemySlow();
-			timerSlow = 0;
-        }
+		}
 
-        if (timerFast > spawnDelayFast + enemyFast.GetComponent<Enemy>().GetRollDelay()
-			&& enemyFast.GetComponent<Enemy>().GetIsMoving())
-        {
+        if (timerFast > spawnDelayFast + 2 * enemyFast.GetComponent<Enemy>().GetRollSeconds()) { 
             spawnEnemyFast();
-            timerFast = 0;
         }
 
     }
 
     void spawnEnemySlow() {
         Vector3 startPosition = enemySpawnPoint + new Vector3(enemySlowWidth/2.0f, enemySlowWidth/ 2.0f, (int)Random.Range(-boardSize.z/2f,boardSize.z/2f) * gridSize);
-        Instantiate(enemySlow, startPosition, transform.rotation);
-    }
+		while(enemySlowLastPos == startPosition) {
+			startPosition = enemySpawnPoint + new Vector3(enemySlowWidth / 2.0f, enemySlowWidth / 2.0f, (int)Random.Range(-boardSize.z / 2f, boardSize.z / 2f) * gridSize);
+		}
+		enemySlowLastPos = startPosition;
+		objectPooler.SpawnFromPool(enemySlowKey, startPosition, transform.rotation);
+		timerSlow = 0;
+		//Instantiate(enemySlow, startPosition, transform.rotation);
+	}
 
     void spawnEnemyFast() {
         Vector3 startPosition = enemySpawnPoint + new Vector3(enemyFastWidth/2.0f, enemyFastWidth / 2.0f, (int)Random.Range(-boardSize.z/2f, boardSize.z/2f) * gridSize);
-        Instantiate(enemyFast, startPosition, transform.rotation);
-    }
+		while (enemyFastLastPos == startPosition) {
+			startPosition = enemySpawnPoint + new Vector3(enemyFastWidth / 2.0f, enemyFastWidth / 2.0f, (int)Random.Range(-boardSize.z / 2f, boardSize.z / 2f) * gridSize);
+		}
+		enemyFastLastPos = startPosition;
+		objectPooler.SpawnFromPool(enemyFastKey, startPosition, transform.rotation);
+		timerFast = 0;
+		//Instantiate(enemyFast, startPosition, transform.rotation);
+	}
 }
