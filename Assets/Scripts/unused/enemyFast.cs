@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class enemySlow : MonoBehaviour {
+public class enemyFast : MonoBehaviour {
     float length;
     Vector3 pivot;
     float speed, angleRotated;
@@ -11,7 +11,7 @@ public class enemySlow : MonoBehaviour {
         angleRotated = 0;
         speed = 10;
         length = GameObject.Find("Cube").GetComponent<Renderer>().bounds.size.x;
-        pivot = transform.position + new Vector3(-0.5f, -0.5f, 0);
+        pivot = transform.position + new Vector3(-length / 2.0f, -length / 2.0f, 0);
     }
 	
 	// Update is called once per frame
@@ -26,7 +26,7 @@ public class enemySlow : MonoBehaviour {
         }
         else {
             angleRotated = 0;
-            pivot = transform.position + new Vector3(-0.5f, -0.5f, 0);
+            pivot = transform.position + new Vector3(-length / 2.0f, -length / 2.0f, 0);
         }
     }
 }
