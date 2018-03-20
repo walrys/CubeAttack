@@ -78,4 +78,8 @@ public class ObjectPooler : MonoBehaviour {
 	public bool IsPoolActive(string key) {
 		return activeItems[key] == 0;
 	}
+
+	public int ActivePool(string key) {
+		return activeItems[key];
+	}
 }

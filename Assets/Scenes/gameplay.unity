@@ -852,7 +852,7 @@ Prefab:
     - target: {fileID: 114239981397718598, guid: eead47205d707cf448d6842de69984d7,
         type: 2}
       propertyPath: rollDelay
-      value: 0.25
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 65414823067248304, guid: eead47205d707cf448d6842de69984d7,
         type: 2}
@@ -1155,32 +1155,14 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1522195654}
-  - component: {fileID: 1522195653}
+  - component: {fileID: 1522195655}
   m_Layer: 0
-  m_Name: EnemySpawner
+  m_Name: Wave 1
   m_TagString: Untagged
   m_Icon: {fileID: 8220585740371884164, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1522195653
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1522195652}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39e9b592d06706246a4296b0c004b2ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  board: {fileID: 1116154706}
-  enemySlowKey: EnemySlow
-  enemySlow: {fileID: 1351741042}
-  spawnDelaySlow: 1
-  enemyFastKey: EnemyFast
-  enemyFast: {fileID: 167804856}
-  spawnDelayFast: 0.1
 --- !u!4 &1522195654
 Transform:
   m_ObjectHideFlags: 0
@@ -1188,12 +1170,32 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1522195652}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.25, y: 1.27, z: -0.7}
+  m_LocalPosition: {x: 5.39, y: 1.27, z: 2.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1522195655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1522195652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0596a0ccbc959e47b40a6bea2a2e02c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  board: {fileID: 1116154706}
+  enemySlowKey: EnemySlow
+  enemySlow: {fileID: 1351741042}
+  spawnDelaySlow: 1
+  MAX_SLOW: 0
+  enemyFastKey: EnemyFast
+  enemyFast: {fileID: 167804856}
+  spawnDelayFast: 0.5
+  MAX_FAST: 10
 --- !u!1 &1574200796
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour, IPooledObject {
 	protected int rollSpeed = 1;
 	[SerializeField][Range(0f, 5f)]
 	private float rollDelay = 1f;
+	private string poolKey;
 
 	protected GameObject pivotPoint;
 	protected Transform pivot;
@@ -18,7 +19,9 @@ public class Enemy : MonoBehaviour, IPooledObject {
     private bool isMoving = false;
 	#endregion
 
-	public void OnObjectSpawn() {
+	public void OnObjectSpawn(string key) {
+		poolKey = key;
+
 		// stop moving if recycled from object pool
 		isMoving = false;
 		StopAllCoroutines();
@@ -72,7 +75,7 @@ public class Enemy : MonoBehaviour, IPooledObject {
 	}
 	private void OnTriggerEnter(Collider collider) {
 		if (collider.gameObject.name == "Wall")
-			CollideWall();
+			Destroy();
 		//if (collider.gameObject.tag == "enemySlow" || collider.gameObject.tag == "enemyFast") {
 		//	if (collider.gameObject.transform.position.x > gameObject.transform.position.x)
 		//		collider.gameObject.SetActive(false);
@@ -84,6 +87,10 @@ public class Enemy : MonoBehaviour, IPooledObject {
 	private void CollideWall() {
 		gameObject.SetActive(false);
 		// TODO deal damage to wall
+	}
+
+	private void Destroy() {
+		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
 	}
 
 

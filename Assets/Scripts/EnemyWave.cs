@@ -57,7 +57,7 @@ public class EnemyWave : MonoBehaviour {
         timerSlow += Time.deltaTime;
         timerFast += Time.deltaTime;
         // spawn enemy after previous enemy has moved + spawn delay
-        if(enemyCountSlow < MAX_SLOW && timerSlow > spawnDelaySlow + 2 * enemySlow.GetComponent<Enemy>().GetRollSeconds()) {
+        if (enemyCountSlow < MAX_SLOW && timerSlow > spawnDelaySlow + 2 * enemySlow.GetComponent<Enemy>().GetRollSeconds()) {
 			//spawnEnemySlow();
 		}
 
@@ -69,14 +69,18 @@ public class EnemyWave : MonoBehaviour {
 			&& objectPooler.IsPoolActive(enemyFastKey) && objectPooler.IsPoolActive(enemySlowKey)) {
 			isWaveOver = true;
 		}
+		//Debug.Log("fast enemies = " + objectPooler.ActivePool(enemyFastKey));
+		//Debug.Log("slow enemies = " + objectPooler.ActivePool(enemySlowKey));
 
-		Debug.Log("enemyCountFast = " + enemyCountFast);
-		Debug.Log("MAX_SLOW = " + MAX_SLOW);
-		Debug.Log("enemyCountSlow = " + enemyCountSlow);
-		Debug.Log("MAX_FAST = " + MAX_FAST);
+		//Debug.Log("enemyCountSlow = " + enemyCountSlow);
+		//Debug.Log("MAX_SLOW = " + MAX_SLOW);
+		//Debug.Log("enemyCountFast = " + enemyCountFast);
+		//Debug.Log("MAX_FAST = " + MAX_FAST);
 
-		if (isWaveOver)
+		if (isWaveOver) {
 			Debug.Log("WAVE OVER!");
+			Destroy(gameObject);
+		}
     }
 
     void spawnEnemySlow() {
