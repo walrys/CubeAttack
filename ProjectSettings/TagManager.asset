@@ -6,6 +6,8 @@ TagManager:
   tags:
   - enemySlow
   - enemyFast
+  - tower
+  - wall
   layers:
   - Default
   - TransparentFX

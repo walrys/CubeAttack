@@ -74,14 +74,12 @@ public class Enemy : MonoBehaviour, IPooledObject {
 		timer = 0;
 	}
 	private void OnTriggerEnter(Collider collider) {
-		if (collider.gameObject.name == "Wall")
-			Destroy();
-		//if (collider.gameObject.tag == "enemySlow" || collider.gameObject.tag == "enemyFast") {
-		//	if (collider.gameObject.transform.position.x > gameObject.transform.position.x)
-		//		collider.gameObject.SetActive(false);
-		//	else
-		//		gameObject.SetActive(false);
-		//}
+        switch (collider.gameObject.tag) {
+            case "wall":
+            case "tower":
+                Destroy();
+            return;
+        }
 	}
 
 	private void CollideWall() {

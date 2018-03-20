@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4430062, g: 0.492195, b: 0.571924, a: 1}
+  m_IndirectSpecularColor: {r: 0.44300658, g: 0.4921953, b: 0.57192475, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -872,6 +872,10 @@ Prefab:
       propertyPath: m_TagString
       value: enemyFast
       objectReference: {fileID: 0}
+    - target: {fileID: 1841909559924302, guid: eead47205d707cf448d6842de69984d7, type: 2}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: eead47205d707cf448d6842de69984d7, type: 2}
   m_IsPrefabParent: 0
@@ -930,6 +934,10 @@ Prefab:
     - target: {fileID: 1248496076959616, guid: ead4c828caf397642871a6e34b3410f1, type: 2}
       propertyPath: m_TagString
       value: enemySlow
+      objectReference: {fileID: 0}
+    - target: {fileID: 1248496076959616, guid: ead4c828caf397642871a6e34b3410f1, type: 2}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ead4c828caf397642871a6e34b3410f1, type: 2}
@@ -1196,6 +1204,24 @@ MonoBehaviour:
   enemyFast: {fileID: 167804856}
   spawnDelayFast: 0.5
   MAX_FAST: 10
+--- !u!1 &1531624973 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100000, guid: 06332910f33c3d54992725d2d620cd2a, type: 3}
+  m_PrefabInternal: {fileID: 1739147520}
+--- !u!64 &1531624977
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1531624973}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300000, guid: 06332910f33c3d54992725d2d620cd2a, type: 3}
 --- !u!1 &1574200796
 GameObject:
   m_ObjectHideFlags: 0
@@ -1389,6 +1415,10 @@ Prefab:
     - target: {fileID: 400002, guid: 06332910f33c3d54992725d2d620cd2a, type: 3}
       propertyPath: m_RootOrder
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 06332910f33c3d54992725d2d620cd2a, type: 3}
+      propertyPath: m_TagString
+      value: tower
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 06332910f33c3d54992725d2d620cd2a, type: 3}
