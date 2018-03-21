@@ -69,13 +69,6 @@ public class EnemyWave : MonoBehaviour {
 			&& objectPooler.IsPoolActive(enemyFastKey) && objectPooler.IsPoolActive(enemySlowKey)) {
 			isWaveOver = true;
 		}
-		//Debug.Log("fast enemies = " + objectPooler.ActivePool(enemyFastKey));
-		//Debug.Log("slow enemies = " + objectPooler.ActivePool(enemySlowKey));
-
-		//Debug.Log("enemyCountSlow = " + enemyCountSlow);
-		//Debug.Log("MAX_SLOW = " + MAX_SLOW);
-		//Debug.Log("enemyCountFast = " + enemyCountFast);
-		//Debug.Log("MAX_FAST = " + MAX_FAST);
 
 		if (isWaveOver) {
 			Debug.Log("WAVE OVER!");

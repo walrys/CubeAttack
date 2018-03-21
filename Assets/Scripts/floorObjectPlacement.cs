@@ -4,10 +4,10 @@ using System;
 
 public class floorObjectPlacement : MonoBehaviour
 {
-
-    public GameObject prefabPlacementObject;
+    public string prefabPlacementObject = "Tower";
     public GameObject prefabOK;
     public GameObject prefabFail;
+	public LayerMask layerMask;
 
     public float grid = 2.0f;
 
@@ -86,8 +86,9 @@ public class floorObjectPlacement : MonoBehaviour
                     Debug.Log("Placement Position: " + x + ", " + z);
                     usedSpace[x, z] = 1;
 
-                    // ToDo: place the result somewhere..
-                    Instantiate(prefabPlacementObject, point, Quaternion.identity);
+					// ToDo: place the result somewhere..
+					//Instantiate(prefabPlacementObject, point, Quaternion.identity).SetActive(true);
+					ObjectPooler.Instance.SpawnFromPool(prefabPlacementObject, point, Quaternion.identity);
                 }
             }
             else if (!Input.GetMouseButtonDown(0))
@@ -116,7 +117,7 @@ public class floorObjectPlacement : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hitInfo = new RaycastHit();
-        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
+        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layerMask))
         {
             if (hitInfo.collider == GetComponent<Collider>())
             {

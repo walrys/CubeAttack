@@ -3,6 +3,7 @@
 * https://walrys.com
 *
 */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public class ObjectPooler : MonoBehaviour {
@@ -73,6 +74,11 @@ public class ObjectPooler : MonoBehaviour {
 		obj.SetActive(false);
 		activeItems[key]--;
 		return true;
+	}
+
+	public IEnumerator DestroyObject(string key, GameObject obj, float delay) {
+		yield return new WaitForSeconds(delay);
+		DestroyObject(key, obj);
 	}
 
 	public bool IsPoolActive(string key) {

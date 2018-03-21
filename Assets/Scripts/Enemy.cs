@@ -2,21 +2,24 @@
 using System.Collections;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IPooledObject {
+public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 	#region Variables
 	[SerializeField][Range(1, 100)]
 	protected int rollSpeed = 1;
 	[SerializeField][Range(0f, 5f)]
-	private float rollDelay = 1f;
-	private string poolKey;
+	float rollDelay = 1f;
+	[SerializeField][Range(0f, 5f)][LabelOverride("Health/Damage")]
+	float health = 1;
+
+	string poolKey;
 
 	protected GameObject pivotPoint;
 	protected Transform pivot;
 
 	protected float cubeSize;
-    private float timer = 0;
-	private float rollDuration;
-    private bool isMoving = false;
+    float timer = 0;
+	float rollDuration;
+    bool isMoving = false;
 	#endregion
 
 	public void OnObjectSpawn(string key) {
@@ -86,8 +89,14 @@ public class Enemy : MonoBehaviour, IPooledObject {
 		gameObject.SetActive(false);
 		// TODO deal damage to wall
 	}
+	
+	public void InflictDamage(float dmg) {
+		health -= dmg;
+		if (health <= 0)
+			Destroy();
+	}
 
-	private void Destroy() {
+	public void Destroy() {
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
 	}
 
