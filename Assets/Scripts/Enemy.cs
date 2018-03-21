@@ -80,6 +80,7 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
         switch (collider.gameObject.tag) {
             case "wall":
             case "tower":
+				collider.gameObject.GetComponent<IAlive>().InflictDamage(health);
                 Destroy();
             return;
         }
