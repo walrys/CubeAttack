@@ -58,7 +58,7 @@ public class EnemyWave : MonoBehaviour {
         timerFast += Time.deltaTime;
         // spawn enemy after previous enemy has moved + spawn delay
         if (enemyCountSlow < MAX_SLOW && timerSlow > spawnDelaySlow + 2 * enemySlow.GetComponent<Enemy>().GetRollSeconds()) {
-			//spawnEnemySlow();
+			spawnEnemySlow();
 		}
 
         if (enemyCountFast < MAX_FAST && timerFast > spawnDelayFast + 2 * enemyFast.GetComponent<Enemy>().GetRollSeconds()) { 

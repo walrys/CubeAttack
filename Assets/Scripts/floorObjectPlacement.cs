@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class floorObjectPlacement : MonoBehaviour
+public class FloorObjectPlacement : MonoBehaviour
 {
     public string prefabPlacementObject = "Tower";
     public GameObject prefabOK;
@@ -20,8 +20,15 @@ public class floorObjectPlacement : MonoBehaviour
     bool mouseClick = false;
     Vector3 lastPos;
 
-    // Use this for initialization
-    void Start()
+	#region Singleton
+	public static FloorObjectPlacement Instance;
+	private void Awake() {
+		Instance = this;
+	}
+	#endregion
+
+	// Use this for initialization
+	void Start()
     {
         Vector3 slots = GetComponent<Renderer>().bounds.size / grid;
         usedSpace = new int[Mathf.CeilToInt(slots.x), Mathf.CeilToInt(slots.z)];
@@ -83,12 +90,11 @@ public class floorObjectPlacement : MonoBehaviour
                 // Place the object
                 if (usedSpace[x, z] == 0)
                 {
-                    Debug.Log("Placement Position: " + x + ", " + z);
                     usedSpace[x, z] = 1;
 
 					// ToDo: place the result somewhere..
 					//Instantiate(prefabPlacementObject, point, Quaternion.identity).SetActive(true);
-					ObjectPooler.Instance.SpawnFromPool(prefabPlacementObject, point, Quaternion.identity);
+					ObjectPooler.Instance.SpawnFromPool(prefabPlacementObject, point, Quaternion.identity).GetComponent<Tower>().SetGridPos(new Vector2(x,z));
                 }
             }
             else if (!Input.GetMouseButtonDown(0))
@@ -128,4 +134,8 @@ public class floorObjectPlacement : MonoBehaviour
         point = Vector3.zero;
         return false;
     }
+
+	public void FreeGrid(Vector2 pos) {
+		usedSpace[(int)pos.x, (int)pos.y] = 0;
+	}
 }

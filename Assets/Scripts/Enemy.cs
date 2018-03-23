@@ -7,19 +7,19 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 	[SerializeField][Range(1, 100)]
 	protected int rollSpeed = 1;
 	[SerializeField][Range(0f, 5f)]
-	float rollDelay = 1f;
+	protected float rollDelay = 1f;
 	[SerializeField][Range(0f, 5f)][LabelOverride("Health/Damage")]
-	float health = 1;
+	protected float health = 1;
 
-	string poolKey;
+	protected string poolKey;
 
 	protected GameObject pivotPoint;
 	protected Transform pivot;
 
 	protected float cubeSize;
-    float timer = 0;
-	float rollDuration;
-    bool isMoving = false;
+	protected float timer = 0;
+	protected float rollDuration;
+	protected bool isMoving = false;
 	#endregion
 
 	public void OnObjectSpawn(string key) {
@@ -97,8 +97,14 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 			Destroy();
 	}
 
-	public void Destroy() {
+	protected virtual void Destroy() {
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
+		GameObject cubeBroken =  ObjectPooler.Instance.SpawnFromPool("SmashedFast", transform.position, transform.rotation);
+		//float scale = 0.5f;
+		//cubeBroken.transform.localScale -= new Vector3(scale, scale, scale);
+		//foreach (Transform coob in cubeBroken.GetComponentsInChildren<Transform>()) {
+		//	//scale = UnityEngine.Random.Range(0f, 0.1f);
+		//	coob.localScale += new Vector3(scale, scale, scale);
 	}
 
 

@@ -13,8 +13,6 @@ public class Bullet : MonoBehaviour {
 	public float damage = 1f;
 
 	private void OnTriggerEnter(Collider collider) {
-		Debug.Log(collider.gameObject.tag);
-		Debug.Log(collider.gameObject.name);
 		if (collider.gameObject.tag != "tower" && collider.gameObject.tag != "select") {
 			IAlive obj = collider.GetComponent<IAlive>();
 			if (obj != null)

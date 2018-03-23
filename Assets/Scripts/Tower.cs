@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Tower : MonoBehaviour, IAlive {
+public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 	#region Serialized variables
 	[SerializeField]
 	string poolKey = "Tower"; 
@@ -30,13 +30,19 @@ public class Tower : MonoBehaviour, IAlive {
 	#endregion
 
 	#region Variables
+	Vector2 pos2d;
 	float countdown = 0;
 	float fireRangeHeight = 0.1f; // height of firing range to be drawn
 	Vector3 bulletStartPos;
 
 	List<GameObject> enemiesInRange;
 	#endregion
-	void Start () {
+
+	private void Awake() {
+		pos2d = new Vector2(0, 0);
+	}
+
+	public void OnObjectSpawn(string key) {
 		// Initialize variables
 		enemiesInRange = new List<GameObject>();
 		Vector3 pos = transform.position;
@@ -135,6 +141,11 @@ public class Tower : MonoBehaviour, IAlive {
 
 
 	public void Destroy() {
+		FloorObjectPlacement.Instance.FreeGrid(pos2d);
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
+	}
+
+	public void SetGridPos(Vector2 pos) {
+		pos2d = pos;
 	}
 }
