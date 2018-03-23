@@ -9,6 +9,7 @@ TagManager:
   - enemy
   - ground
   - select
+  - towerrange
   layers:
   - Default
   - TransparentFX

@@ -8,22 +8,23 @@ public class Wall : MonoBehaviour, IAlive {
 	float initialHealth = 10;
 	#endregion
 
-	#region Variables
-	float health;
-	#endregion
+	public Color lerpedColor = Color.white;
+	void Update() {
+		lerpedColor = Color.Lerp(Color.white, Color.black, Mathf.PingPong(Time.time*10f, 1));
+		//GetComponent<Renderer>().material.color = lerpedColor;
+	}
+	
 	public void InflictDamage(float dmg) {
-		health -= dmg;
+		GameData.Health -= dmg;
 		// do visual indication of lose health
-		if (health <= 0)
+		if (GameData.Health <= 0) {
+			// Game over
 			Destroy();
+		}
 	}
 
 	// Use this for initialization
-	void Start () {
-		health = initialHealth;
-	}
 
 	void Destroy() {
-		// call game over
 	}
 }

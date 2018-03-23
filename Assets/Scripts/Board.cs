@@ -2,13 +2,14 @@
 using System.Collections;
 using System;
 
-public class FloorObjectPlacement : MonoBehaviour
+public class Board : MonoBehaviour
 {
     public string prefabPlacementObject = "Tower";
     public GameObject prefabOK;
     public GameObject prefabFail;
 	public LayerMask layerMask;
 
+	public int towerCost = 250;
     public float grid = 2.0f;
 
     // Store which spaces are in use
@@ -21,13 +22,12 @@ public class FloorObjectPlacement : MonoBehaviour
     Vector3 lastPos;
 
 	#region Singleton
-	public static FloorObjectPlacement Instance;
+	public static Board Instance;
 	private void Awake() {
 		Instance = this;
 	}
 	#endregion
 
-	// Use this for initialization
 	void Start()
     {
         Vector3 slots = GetComponent<Renderer>().bounds.size / grid;
@@ -49,7 +49,6 @@ public class FloorObjectPlacement : MonoBehaviour
         // Check for mouse ray collision with this object
         if (getTargetLocation(out point))
         {
-            //I'm lazy and use the object size from the renderer..
             Vector3 halfSlots = GetComponent<Renderer>().bounds.size / 2.0f;
 
             // Transform position is the center point of this object, x and z are grid slots from 0..slots-1
@@ -71,6 +70,7 @@ public class FloorObjectPlacement : MonoBehaviour
                     Destroy(areaObject);
                 }
                 areaObject = (GameObject)Instantiate(usedSpace[x, z] == 0 ? prefabOK : prefabFail, point, Quaternion.identity);
+				areaObject.SetActive(true);
             }
 
             // Create or move the object
@@ -90,11 +90,16 @@ public class FloorObjectPlacement : MonoBehaviour
                 // Place the object
                 if (usedSpace[x, z] == 0)
                 {
-                    usedSpace[x, z] = 1;
-
-					// ToDo: place the result somewhere..
 					//Instantiate(prefabPlacementObject, point, Quaternion.identity).SetActive(true);
-					ObjectPooler.Instance.SpawnFromPool(prefabPlacementObject, point, Quaternion.identity).GetComponent<Tower>().SetGridPos(new Vector2(x,z));
+					if (GameData.Gold >= towerCost) {
+						// Buy a tower and place it
+						usedSpace[x, z] = 1;
+						GameData.Gold -= towerCost;
+						ObjectPooler.Instance.SpawnFromPool(prefabPlacementObject, point, Quaternion.identity).GetComponent<Tower>().SetGridPos(new Vector2(x, z));
+						// Display UI gold deduction
+					}
+					else
+						UI_Gold.Instance.Flash();
                 }
             }
             else if (!Input.GetMouseButtonDown(0))
@@ -118,10 +123,9 @@ public class FloorObjectPlacement : MonoBehaviour
         }
     }
 
-    bool getTargetLocation(out Vector3 point)
+	bool getTargetLocation(out Vector3 point)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
         RaycastHit hitInfo = new RaycastHit();
         if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layerMask))
         {

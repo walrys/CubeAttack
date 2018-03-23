@@ -51,12 +51,12 @@ public class EnemyWave : MonoBehaviour {
         enemySlowWidth = enemySlow.GetComponentInChildren<Renderer>().bounds.size.x;
         enemyFastWidth = enemyFast.GetComponentInChildren<Renderer>().bounds.size.x;
         enemySpawnPoint = board.transform.position + new Vector3(boardBounds.size.x / 2.0f, boardBounds.size.y / 2.0f, 0.5f);
-    }
+	}
 	
 	void Update () {
         timerSlow += Time.deltaTime;
         timerFast += Time.deltaTime;
-        // spawn enemy after previous enemy has moved + spawn delay
+		// spawn enemy after previous enemy has moved + spawn delay
         if (enemyCountSlow < MAX_SLOW && timerSlow > spawnDelaySlow + 2 * enemySlow.GetComponent<Enemy>().GetRollSeconds()) {
 			spawnEnemySlow();
 		}
@@ -77,9 +77,9 @@ public class EnemyWave : MonoBehaviour {
     }
 
     void spawnEnemySlow() {
-        Vector3 startPosition = enemySpawnPoint + new Vector3(enemySlowWidth/2.0f, enemySlowWidth/ 2.0f, (int)Random.Range(-boardSize.z/2f,boardSize.z/2f) * gridSize);
+        Vector3 startPosition = enemySpawnPoint + new Vector3(enemySlowWidth/2.0f, enemySlowWidth/ 2.0f, (int)Random.Range(-boardSize.z/2f, boardSize.z/2f-1) * gridSize);
 		while(enemySlowLastPos == startPosition) {
-			startPosition = enemySpawnPoint + new Vector3(enemySlowWidth / 2.0f, enemySlowWidth / 2.0f, (int)Random.Range(-boardSize.z / 2f, boardSize.z / 2f) * gridSize);
+			startPosition = enemySpawnPoint + new Vector3(enemySlowWidth / 2.0f, enemySlowWidth / 2.0f, (int)Random.Range(-boardSize.z / 2f, boardSize.z / 2f-1) * gridSize);
 		}
 		enemySlowLastPos = startPosition;
 		objectPooler.SpawnFromPool(enemySlowKey, startPosition, transform.rotation);

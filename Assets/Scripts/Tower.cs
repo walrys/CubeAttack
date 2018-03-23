@@ -11,8 +11,7 @@ using UnityEngine;
 public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 	#region Serialized variables
 	[SerializeField]
-	string poolKey = "Tower"; 
-	[Space]
+	string poolKey = "Tower";
 	[SerializeField]
 	int radius = 1; // radius of firing range
 	[SerializeField]
@@ -62,7 +61,7 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 		fireRange.GetComponent<CapsuleCollider>().isTrigger = true;
 		gameObject.AddComponent<Rigidbody>().isKinematic = true;
 		GetComponent<Rigidbody>().useGravity = false;
-		fireRange.tag = "select";
+		fireRange.tag = "towerrange";
 		fireRange.layer = 8; // Ignore mouse raycast;
 
 		fireRange.name = "fireRange";
@@ -71,9 +70,6 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 		countdown = fireDelay;
 	}
 	
-	// spawn sphere and fire at object in range
-	// at a rate (spawn a sphere every few seconds)
-
 	void Update () {
 		countdown -= Time.deltaTime;
 
@@ -114,38 +110,40 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 
 	void Fire() {
 		GameObject enemy = GetClosestEnemy(enemiesInRange);
-		// remove enemy if it destroyed itself after collision with tower
+		// remove all enemies that are inactive (dead) but in range
 		while (enemy && !enemy.activeSelf) {
 			enemiesInRange.Remove(enemy);
 			enemy = GetClosestEnemy(enemiesInRange);
 		}
-		// destroy enemy if within range
+		// shoot nearest enemy
 ;		if (enemy) {
 			GameObject bullet = ObjectPooler.Instance.SpawnFromPool("Bullet", bulletStartPos, Quaternion.identity);
+			bullet.SetActive(true);
 			bullet.GetComponent<Bullet>().damage = damage;
 			Vector3 direction = Vector3.Normalize(enemy.transform.position - bullet.transform.position);
 			bullet.GetComponent<Rigidbody>().velocity = direction * bulletSpeed;
-			// Destroy the bullet after 2 seconds
-			//ObjectPooler.Instance.DestroyObject("Bullet", bullet,  2.0f);
-
-			//enemy.GetComponent<Enemy>().Destroy();
-			//enemiesInRange.Remove(enemy);
 		}
 	}
 
 	public void InflictDamage(float dmg) {
 		health -= dmg;
-		if (health <= 0)
+		if (health <= 0) {
+			health = 0;
 			Destroy();
+		}
 	}
 
 
 	public void Destroy() {
-		FloorObjectPlacement.Instance.FreeGrid(pos2d);
+		Board.Instance.FreeGrid(pos2d);
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
 	}
 
 	public void SetGridPos(Vector2 pos) {
 		pos2d = pos;
+	}
+
+	public float GetHealth() {
+		return health;
 	}
 }

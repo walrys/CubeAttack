@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shrink : MonoBehaviour {
+public class Gold : MonoBehaviour {
 	//public float countdown = 2f;
 	public float collectionCountdown = 0f;
 	float timer = 0;
@@ -11,12 +11,12 @@ public class Shrink : MonoBehaviour {
 	float maxHeight = 4f;
 	float minSize = 0;
 	float velocity = 0;
-	Vector3 initialPos;
+	float gold;
 
 	// Use this for initialization
 	public void Start () {
-		initialPos = transform.localPosition;
 		timer = 0;// Random.Range(0f, 2f);
+		gold = transform.localScale.x;
 		maxHeight = Random.Range(0f, 3f);
 		collectionTimer = collectionCountdown + Random.Range(0f, 1f);
 		minSize = Random.Range(0f, 2f);
@@ -24,6 +24,12 @@ public class Shrink : MonoBehaviour {
 		height = 0;
 		velocity = 0;
 		gameObject.GetComponent<Rigidbody>().useGravity = true;
+	}
+
+	private void OnCollisionEnter(Collision collision) {
+		if(collision.collider.tag == "wall") {
+			Collect();
+		}
 	}
 
 	// Update is called once per frame
@@ -45,7 +51,12 @@ public class Shrink : MonoBehaviour {
 		}
 		if(height >= maxHeight) {
 			//Destroy(gameObject);
-			transform.gameObject.SetActive(false);
+			Collect();
 		}
+	}
+
+	void Collect() {
+		transform.gameObject.SetActive(false);
+		GameData.Gold += gold;
 	}
 }

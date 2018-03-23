@@ -10,6 +10,8 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 	protected float rollDelay = 1f;
 	[SerializeField][Range(0f, 5f)][LabelOverride("Health/Damage")]
 	protected float health = 1;
+	[SerializeField]
+	protected int score = 10;
 
 	protected string poolKey;
 
@@ -20,12 +22,13 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 	protected float timer = 0;
 	protected float rollDuration;
 	protected bool isMoving = false;
+	protected int dodges = 0;
 	#endregion
-
 	public void OnObjectSpawn(string key) {
 		poolKey = key;
 
-		// stop moving if recycled from object pool
+		// reset state when recycled from object pool
+		dodges = 0;
 		isMoving = false;
 		StopAllCoroutines();
 
@@ -79,27 +82,32 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 	private void OnTriggerEnter(Collider collider) {
         switch (collider.gameObject.tag) {
             case "wall":
-            case "tower":
-				collider.gameObject.GetComponent<IAlive>().InflictDamage(health);
-                Destroy();
-            return;
+				//collider.gameObject.GetComponent<IAlive>().InflictDamage(health);
+				Destroy(collider.gameObject);
+				Destroy();
+				break;
+			case "tower":
+				float received = collider.gameObject.GetComponent<Tower>().GetHealth();
+				float dealt = health;
+				InflictDamage(received);
+				collider.gameObject.GetComponent<IAlive>().InflictDamage(dealt);
+				break;
         }
-	}
-
-	private void CollideWall() {
-		gameObject.SetActive(false);
-		// TODO deal damage to wall
 	}
 	
 	public void InflictDamage(float dmg) {
 		health -= dmg;
-		if (health <= 0)
+		if (health <= 0) {
+			health = 0;
 			Destroy();
+		}
 	}
 
 	protected virtual void Destroy() {
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
-		GameObject cubeBroken =  ObjectPooler.Instance.SpawnFromPool("SmashedFast", transform.position, transform.rotation);
+		GameData.Score += score;
+		//GameObject cubeBroken =  
+		ObjectPooler.Instance.SpawnFromPool("SmashedFast", transform.position, transform.rotation);
 		//float scale = 0.5f;
 		//cubeBroken.transform.localScale -= new Vector3(scale, scale, scale);
 		//foreach (Transform coob in cubeBroken.GetComponentsInChildren<Transform>()) {
