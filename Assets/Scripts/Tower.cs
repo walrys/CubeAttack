@@ -20,8 +20,7 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 	float health = 3f;
 	[SerializeField][Range(0,10f)]
 	float damage = 3f;
-	[SerializeField][Range(0,10f)]
-	float bulletSpeed = 6f;
+	float bulletSpeed = 13f;
 	[SerializeField]
 	bool showRange = false;
 	[SerializeField]
@@ -42,6 +41,10 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 	}
 
 	public void OnObjectSpawn(string key) {
+		// Get tower settings
+		radius = (int) GameData.TowerRangeSettings;
+		fireDelay = GameData.TowerDelaySettings;
+
 		// Initialize variables
 		enemiesInRange = new List<GameObject>();
 		Vector3 pos = transform.position;

@@ -13,7 +13,11 @@ public static class GameData {
 	public static float Gold = 500f;
 	#endregion
 
-	public static void UpdateGold() {
-		Gold += 1;
-	}
+	#region Settings
+	public static int GoldSettings = 500;
+	public static int TowerRangeSettings = 1;
+	public static int TowerDelaySettings = 2;
+	public static int NumEnemiesSlow = 10;
+	public static int NumEnemiesFast = 30;
+	#endregion
 }

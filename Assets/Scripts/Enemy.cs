@@ -105,7 +105,8 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 
 	protected virtual void Destroy() {
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
-		GameData.Score += score;
+		if(!GameManager.Instance.isGameOver)
+			GameData.Score += score;
 		//GameObject cubeBroken =  
 		ObjectPooler.Instance.SpawnFromPool("SmashedFast", transform.position, transform.rotation);
 		//float scale = 0.5f;

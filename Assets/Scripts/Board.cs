@@ -117,6 +117,10 @@ public class Board : MonoBehaviour
 
 	// Get first nearest object under mouse
 	bool GetObjectAtMouse(out Vector3 point) {
+		if (GameManager.Instance.isGameOver) {
+			point = Vector3.zero;
+			return false;
+		}
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo = new RaycastHit();
         if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layerMask)) {

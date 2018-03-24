@@ -57,7 +57,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 06332910f33c3d54992725d2d620cd2a, type: 3}
+  - {fileID: 2100000, guid: 775271d8c0a370a428238dfcc892720f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,9 +111,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolKey: Tower
   radius: 2
-  fireDelay: 100
+  fireDelay: 1.5
   health: 3
   damage: 1
   bulletSpeed: 10
-  showRange: 1
+  showRange: 0
   rangeMaterial: {fileID: 2100000, guid: 02c2e95246b1fe04d9ddf6e5fc66c57f, type: 2}

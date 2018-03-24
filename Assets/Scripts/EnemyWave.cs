@@ -45,6 +45,10 @@ public class EnemyWave : MonoBehaviour {
 	#endregion
 	
     void Start() {
+		// Get Numbers from settings
+		MAX_SLOW = GameData.NumEnemiesSlow;
+		MAX_FAST = GameData.NumEnemiesFast;
+
 		objectPooler = ObjectPooler.Instance;
         Bounds boardBounds = board.GetComponent<Renderer>().bounds;
         boardSize = boardBounds.size;
