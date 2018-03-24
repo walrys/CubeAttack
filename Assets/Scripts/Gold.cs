@@ -57,6 +57,7 @@ public class Gold : MonoBehaviour {
 
 	void Collect() {
 		transform.gameObject.SetActive(false);
-		GameData.Gold += gold;
+		if (!GameData.isGameOver)
+			GameData.Gold += gold;
 	}
 }

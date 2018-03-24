@@ -12,4 +12,9 @@ public class MenuNumFast : MonoBehaviour {
 	public void SetNumber(float amount) {
 		GameData.NumEnemiesFast = (int) amount;
 	}
+
+	private void Start() {
+		if (GetComponent<Slider>() != null)
+			GetComponent<Slider>().value = GameData.NumEnemiesFast;
+	}
 }

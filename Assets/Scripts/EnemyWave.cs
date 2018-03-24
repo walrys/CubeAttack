@@ -33,6 +33,10 @@ public class EnemyWave : MonoBehaviour {
 	private int MAX_FAST = 1;
 	#endregion
 
+	[Space]
+
+	public GameObject waveOverScreen;
+
 	#region Private Variables
 	private ObjectPooler objectPooler;
 	private float timerSlow = 0, timerFast = 0, enemySlowWidth, enemyFastWidth;
@@ -75,7 +79,8 @@ public class EnemyWave : MonoBehaviour {
 		}
 
 		if (isWaveOver) {
-			Debug.Log("WAVE OVER!");
+			GameData.isGameOver = true;
+			waveOverScreen.SetActive(true);
 			Destroy(gameObject);
 		}
     }
@@ -92,7 +97,7 @@ public class EnemyWave : MonoBehaviour {
 	}
 
     void spawnEnemyFast() {
-        Vector3 startPosition = enemySpawnPoint + new Vector3(enemyFastWidth/2.0f, enemyFastWidth / 2.0f, (int)Random.Range(-boardSize.z/2f, boardSize.z/2f) * gridSize);
+        Vector3 startPosition = enemySpawnPoint + new Vector3(enemyFastWidth/2.0f, enemyFastWidth / 2.0f, (int)Random.Range(-boardSize.z/2f, boardSize.z/ 2f) * gridSize);
 		while (enemyFastLastPos == startPosition) {
 			startPosition = enemySpawnPoint + new Vector3(enemyFastWidth / 2.0f, enemyFastWidth / 2.0f, (int)Random.Range(-boardSize.z / 2f, boardSize.z / 2f) * gridSize);
 		}

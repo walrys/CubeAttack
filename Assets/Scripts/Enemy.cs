@@ -54,18 +54,28 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 
 	protected virtual void Move() {
 		pivot.Translate(-cubeSize / 2, -cubeSize / 2, 0);
-		StartCoroutine(DoRoll(Vector3.forward, 90.0f, rollSpeed));
+		StartCoroutine(DoRoll(Vector3.forward, rollSpeed));
 	}
 
-	protected IEnumerator DoRoll(Vector3 axis, float angle, float speed) {
+	protected IEnumerator DoRoll(Vector3 axis, float speed) {
 		float aDuration = 1.0f / speed;
 		float steps = Mathf.Ceil(aDuration * 100.0f);
-		float stepAngle = angle / steps;
+		float stepAngle = 90f / steps;
+		Vector3 direction = new Vector3(-axis.z, 0, axis.x);
 
-		// Rotate cube about pivot at every step by stepAngle
-		for (var i = 1; i <= steps; i++) {
-			transform.RotateAround(pivot.position, axis, stepAngle);
-			yield return new WaitForSeconds(0.01f);
+		// wait if space is occupied by another cube
+		RaycastHit hitInfo;
+		Ray ray = new Ray(transform.position, direction);
+		if (Physics.Raycast(ray, out hitInfo, cubeSize) && hitInfo.collider.tag == "enemy") {
+			yield return new WaitForSeconds(0.5f);
+		}
+
+		else {
+			// Rotate cube about pivot at every step by stepAngle
+			for (var i = 1; i <= steps; i++) {
+				transform.RotateAround(pivot.position, axis, stepAngle);
+				yield return new WaitForSeconds(0.01f);
+			}
 		}
 
 		// move the targetpoint to the center of the cube
@@ -80,9 +90,8 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 		timer = 0;
 	}
 	private void OnTriggerEnter(Collider collider) {
-        switch (collider.gameObject.tag) {
-            case "wall":
-				//collider.gameObject.GetComponent<IAlive>().InflictDamage(health);
+		switch (collider.gameObject.tag) {
+			case "wall":
 				Destroy(collider.gameObject);
 				Destroy();
 				break;
@@ -92,9 +101,9 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 				InflictDamage(received);
 				collider.gameObject.GetComponent<IAlive>().InflictDamage(dealt);
 				break;
-        }
+		}
 	}
-	
+
 	public void InflictDamage(float dmg) {
 		health -= dmg;
 		if (health <= 0) {
@@ -105,15 +114,9 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 
 	protected virtual void Destroy() {
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
-		if(!GameManager.Instance.isGameOver)
+		if(!GameData.isGameOver)
 			GameData.Score += score;
-		//GameObject cubeBroken =  
 		ObjectPooler.Instance.SpawnFromPool("SmashedFast", transform.position, transform.rotation);
-		//float scale = 0.5f;
-		//cubeBroken.transform.localScale -= new Vector3(scale, scale, scale);
-		//foreach (Transform coob in cubeBroken.GetComponentsInChildren<Transform>()) {
-		//	//scale = UnityEngine.Random.Range(0f, 0.1f);
-		//	coob.localScale += new Vector3(scale, scale, scale);
 	}
 
 

@@ -10,4 +10,9 @@ public class MenuTowerDelay : MonoBehaviour {
 	public void SetDelay(float amount) {
 		GameData.TowerDelaySettings = (int) amount;
 	}
+
+	private void Start() {
+		if (GetComponent<Slider>() != null)
+			GetComponent<Slider>().value = GameData.TowerDelaySettings;
+	}
 }

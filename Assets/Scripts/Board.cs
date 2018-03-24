@@ -55,49 +55,33 @@ public class Board : MonoBehaviour
 
             // Create an object to see if this area is available for building
             // Re-instantiate only when the slot has changed or the object not instantiated at all
-            if (lastPos.x != x || lastPos.z != z || areaObject == null)
-            {
+            if (lastPos.x != x || lastPos.z != z || areaObject == null){
                 lastPos.x = x;
                 lastPos.z = z;
-                if (areaObject != null)
-                {
+                if (areaObject != null){
                     Destroy(areaObject);
                 }
                 areaObject = (GameObject)Instantiate(usedSpace[x, z] == 0 ? prefabOK : prefabFail, point, Quaternion.identity);
 				areaObject.SetActive(true);
             }
 
-            // Create or move the object
-            //if (!placementObject)
-            //{
-            //    placementObject = (GameObject)Instantiate(prefabPlacementObject, point, Quaternion.identity);
-            //}
-            //else
-            //{
-            //    placementObject.transform.position = point;
-            //}
-
             // On left click, insert the object to the area and mark it as "used"
-            if (Input.GetMouseButtonDown(0) && mouseClick == false)
-            {
+            if (Input.GetMouseButtonDown(0) && mouseClick == false) {
                 mouseClick = true;
                 // Place the object
-                if (usedSpace[x, z] == 0)
-                {
-					//Instantiate(prefabPlacementObject, point, Quaternion.identity).SetActive(true);
+                if (usedSpace[x, z] == 0) {
 					if (GameData.Gold >= towerCost) {
 						// Buy a tower and place it
 						usedSpace[x, z] = 1;
 						GameData.Gold -= towerCost;
 						ObjectPooler.Instance.SpawnFromPool(prefabPlacementObject, point, Quaternion.identity).GetComponent<Tower>().SetGridPos(new Vector2(x, z));
-						// Display UI gold deduction
+						areaObject.SetActive(false);
 					}
-					else
+					else // not enough gold
 						UI_Gold.Instance.Flash();
                 }
             }
-            else if (!Input.GetMouseButtonDown(0))
-            {
+            else if (!Input.GetMouseButtonDown(0)) {
                 mouseClick = false;
             }
 
@@ -117,7 +101,7 @@ public class Board : MonoBehaviour
 
 	// Get first nearest object under mouse
 	bool GetObjectAtMouse(out Vector3 point) {
-		if (GameManager.Instance.isGameOver) {
+		if (GameData.isGameOver) {
 			point = Vector3.zero;
 			return false;
 		}

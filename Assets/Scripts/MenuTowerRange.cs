@@ -10,4 +10,9 @@ public class MenuTowerRange : MonoBehaviour {
 	public void SetRange(float amount) {
 		GameData.TowerRangeSettings = (int) amount;
 	}
+
+	private void Start() {
+		if (GetComponent<Slider>() != null)
+			GetComponent<Slider>().value = GameData.TowerRangeSettings;
+	}
 }

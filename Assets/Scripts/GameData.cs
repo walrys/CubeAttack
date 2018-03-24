@@ -8,6 +8,7 @@ using UnityEngine;
 
 public static class GameData {
 	#region Variables
+	public static bool isGameOver = false;
 	public static int Score = 0;
 	public static float Health = 50f;
 	public static float Gold = 500f;

@@ -53,8 +53,8 @@ public class EnemySlow : Enemy {
 	}
 
 	protected override void Move() {
+		// roll forward if dodged more than maxDodges
 		if (dodges >= maxDodges) {
-			// move forward if dodged more than maxDodges
 			x = -cubeSize / 2;
 			y = -cubeSize / 2;
 			z = 0;
@@ -82,7 +82,7 @@ public class EnemySlow : Enemy {
 
 		// calculate axis of rotation w.r.t pivot point
 		Vector3 axis = Vector3.Normalize(new Vector3(z, 0, -x));
-		StartCoroutine(DoRoll(axis, 90.0f, rollSpeed));
+		StartCoroutine(DoRoll(axis, rollSpeed));
 	}
 
 	private void MoveRandom() {
@@ -96,12 +96,13 @@ public class EnemySlow : Enemy {
 
 		// calculate axis of rotation w.r.t pivot point
 		Vector3 axis = Vector3.Normalize(new Vector3(z, 0, -x));
-		StartCoroutine(DoRoll(axis, 90.0f, rollSpeed));
+		StartCoroutine(DoRoll(axis, rollSpeed));
 	}
 
 	protected override void Destroy() {
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
-		GameData.Score += score;
+		if (!GameData.isGameOver)
+			GameData.Score += score;
 		ObjectPooler.Instance.SpawnFromPool("SmashedSlow", transform.position, transform.rotation);
 	}
 }

@@ -10,4 +10,9 @@ public class MenuNumSlow : MonoBehaviour {
 	public void SetNumber(float amount) {
 		GameData.NumEnemiesSlow = (int)amount;
 	}
+
+	private void Start() {
+		if (GetComponent<Slider>() != null)
+			GetComponent<Slider>().value = GameData.NumEnemiesSlow;
+	}
 }

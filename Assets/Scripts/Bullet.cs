@@ -32,7 +32,6 @@ public class Bullet : MonoBehaviour {
 			yield return new WaitForSeconds(.005f);
 		}
 
-		Debug.Log("YAY");
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
 	}
 }

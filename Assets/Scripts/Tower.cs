@@ -20,7 +20,7 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 	float health = 3f;
 	[SerializeField][Range(0,10f)]
 	float damage = 3f;
-	float bulletSpeed = 13f;
+	float bulletSpeed = 20f;
 	[SerializeField]
 	bool showRange = false;
 	[SerializeField]
@@ -55,7 +55,7 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 		fireRange.transform.SetParent(transform);
 		fireRange.transform.localPosition = Vector3.zero;
 		fireRange.transform.rotation = Quaternion.identity;
-		fireRange.transform.localScale = new Vector3(2 * radius + 1, fireRangeHeight, 2 * radius + 1);
+		fireRange.transform.localScale = new Vector3(2 * radius + 0.95f, fireRangeHeight, 2 * radius + 0.95f);
 
 		// set meshrenderer visibility
 		fireRange.GetComponent<MeshRenderer>().enabled = showRange;
@@ -119,7 +119,7 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 			enemy = GetClosestEnemy(enemiesInRange);
 		}
 		// shoot nearest enemy
-;		if (enemy) {
+;		if (!GameData.isGameOver && enemy) {
 			GameObject bullet = ObjectPooler.Instance.SpawnFromPool("Bullet", bulletStartPos, Quaternion.identity);
 			bullet.SetActive(true);
 			bullet.GetComponent<Bullet>().damage = damage;

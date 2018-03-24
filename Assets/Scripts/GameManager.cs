@@ -13,19 +13,18 @@ public class GameManager : MonoBehaviour {
 
 	public GameObject menu;
 	float slowFactor = 0.01f;
-	[System.NonSerialized]
-	public bool isGameOver = false;
 
 	private void Start() {
-		isGameOver = false;
+		GameData.isGameOver = false;
 	}
 
 	public void GameOver() {
-		isGameOver = true;
+		GameData.isGameOver = true;
 		Invoke("ShowGameOverMenu", 3f);
 	}
 
 	void ShowGameOverMenu() {
-		menu.SetActive(true);
+		if(menu != null)
+			menu.SetActive(true);
 	}
 }
