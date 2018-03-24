@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 
 public class Board : MonoBehaviour
@@ -10,9 +9,9 @@ public class Board : MonoBehaviour
 	public LayerMask layerMask;
 
 	public int towerCost = 250;
-    public float grid = 2.0f;
+    public float gridSize = 1.0f;
 
-    // Store which spaces are in use
+    // Store which grids are in use
     int[,] usedSpace;
 
     GameObject placementObject = null;
@@ -28,38 +27,33 @@ public class Board : MonoBehaviour
 	}
 	#endregion
 
-	void Start()
-    {
-        Vector3 slots = GetComponent<Renderer>().bounds.size / grid;
-        usedSpace = new int[Mathf.CeilToInt(slots.x), Mathf.CeilToInt(slots.z)];
-        for (var x = 0; x < Mathf.CeilToInt(slots.x); x++)
-        {
-            for (var z = 0; z < Mathf.CeilToInt(slots.z); z++)
-            {
+	void Start() {
+		// initialize 2D grid array with grid size
+        Vector3 slots = GetComponent<Renderer>().bounds.size / gridSize;
+		usedSpace = new int[Mathf.CeilToInt(slots.x), Mathf.CeilToInt(slots.z)];
+        for (var x = 0; x < Mathf.CeilToInt(slots.x); x++) {
+            for (var z = 0; z < Mathf.CeilToInt(slots.z); z++) {
                 usedSpace[x, z] = 0;
             }
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         Vector3 point;
 
-        // Check for mouse ray collision with this object
-        if (getTargetLocation(out point))
-        {
+        // Get target under mouse
+        if (GetObjectAtMouse(out point)) {
             Vector3 halfSlots = GetComponent<Renderer>().bounds.size / 2.0f;
 
-            // Transform position is the center point of this object, x and z are grid slots from 0..slots-1
-            int x = (int)Math.Round(Math.Round(point.x - transform.position.x + halfSlots.x - grid / 2.0f) / grid);
-            int z = (int)Math.Round(Math.Round(point.z - transform.position.z + halfSlots.z - grid / 2.0f) / grid);
+            // get grid position at mouse position
+            int x = (int)Math.Round(Math.Round(point.x - transform.position.x + halfSlots.x - gridSize / 2.0f) / gridSize);
+            int z = (int)Math.Round(Math.Round(point.z - transform.position.z + halfSlots.z - gridSize / 2.0f) / gridSize);
 
-            // Calculate the quantized world coordinates on where to actually place the object
-            point.x = (float)(x) * grid - halfSlots.x + transform.position.x + grid / 2.0f;
-            point.z = (float)(z) * grid - halfSlots.z + transform.position.z + grid / 2.0f;
+            // Calculate the quantized world coordinates to place the object
+            point.x = (float)(x) * gridSize - halfSlots.x + transform.position.x + gridSize / 2.0f;
+            point.z = (float)(z) * gridSize - halfSlots.z + transform.position.z + gridSize / 2.0f;
 
-            // Create an object to show if this area is available for building
+            // Create an object to see if this area is available for building
             // Re-instantiate only when the slot has changed or the object not instantiated at all
             if (lastPos.x != x || lastPos.z != z || areaObject == null)
             {
@@ -108,29 +102,25 @@ public class Board : MonoBehaviour
             }
 
         }
-        else
-        {
-            if (placementObject)
-            {
+		// else no valid target
+		else {
+            if (placementObject) {
                 Destroy(placementObject);
                 placementObject = null;
             }
-            if (areaObject)
-            {
+            if (areaObject) {
                 Destroy(areaObject);
                 areaObject = null;
             }
         }
     }
 
-	bool getTargetLocation(out Vector3 point)
-    {
+	// Get first nearest object under mouse
+	bool GetObjectAtMouse(out Vector3 point) {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo = new RaycastHit();
-        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layerMask))
-        {
-            if (hitInfo.collider == GetComponent<Collider>())
-            {
+        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layerMask)) {
+            if (hitInfo.collider == GetComponent<Collider>()) {
                 point = hitInfo.point;
                 return true;
             }
@@ -139,6 +129,7 @@ public class Board : MonoBehaviour
         return false;
     }
 
+	// free up previously occupied grid
 	public void FreeGrid(Vector2 pos) {
 		usedSpace[(int)pos.x, (int)pos.y] = 0;
 	}

@@ -1,10 +1,4 @@
-﻿/*
-* Author Walrys
-* https://walrys.com
-*
-*/
-
-using UnityEngine;
+﻿using UnityEngine;
 
 
 public class GoldSlider : MonoBehaviour {
