@@ -55,10 +55,10 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 		fireRange.name = "fireRange";
 		fireRange.tag = "towerrange";
 		fireRange.layer = 8; // Ignore mouse raycast;
+		fireRange.transform.SetParent(transform);
 		fireRange.transform.localPosition = Vector3.zero;
 		fireRange.transform.localScale = new Vector3(2 * fireRadius + 0.95f, fireRangeHeight, 2 * fireRadius + 0.95f);
 		fireRange.transform.rotation = Quaternion.identity;
-		fireRange.transform.SetParent(transform);
 
 		// Set visibility of range
 		fireRange.GetComponent<MeshRenderer>().enabled = showRange;
