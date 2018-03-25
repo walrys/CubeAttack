@@ -7,8 +7,9 @@ public class EnemyShattered : MonoBehaviour, IPooledObject {
 	List<Quaternion> initialRotation;
 	List<Vector3> initialScale;
 	public string poolKey;
-	//float timer = 0;
+
 	void Awake() {
+		// store initial transform of all child cubes
 		if (initialPosition == null) {
 			initialPosition = new List<Vector3>();
 			initialRotation = new List<Quaternion>();
@@ -21,7 +22,8 @@ public class EnemyShattered : MonoBehaviour, IPooledObject {
 		}
 	}
 	public void OnObjectSpawn(string key) {
-		//timer = 0f;
+		// reset transform of all child cubes
+		// (to reset it back to form a large cube when recalled from object pool)
 		for (int i = 0; i < transform.childCount; i++) {
 			transform.GetChild(i).gameObject.SetActive(true);
 			transform.GetChild(i).gameObject.GetComponent<Gold>().Start();

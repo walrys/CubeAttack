@@ -10,6 +10,7 @@ TagManager:
   - ground
   - select
   - towerrange
+  - gold
   layers:
   - Default
   - TransparentFX

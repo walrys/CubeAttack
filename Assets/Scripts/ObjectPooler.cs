@@ -1,9 +1,4 @@
-﻿/*
-* Author Walrys
-* https://walrys.com
-*
-*/
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public class ObjectPooler : MonoBehaviour {
@@ -31,13 +26,16 @@ public class ObjectPooler : MonoBehaviour {
 	void Start () {
 		poolDictionary = new Dictionary<string, Queue<GameObject>>();
 		activeItems = new Dictionary<string, int>();
+		GameObject ObjectPool = new GameObject("ObjectPool");
 
+		// instantiate all pool prefabs
 		foreach (Pool pool in pools) {
 			Queue<GameObject> objectPool = new Queue<GameObject>();
 			for(int i=0; i<pool.size; i++) {
 				GameObject obj = Instantiate(pool.prefab);
 				obj.SetActive(false);
 				objectPool.Enqueue(obj);
+				obj.transform.SetParent(ObjectPool.transform);
 			}
 			poolDictionary.Add(pool.key, objectPool);
 			activeItems.Add(pool.key, 0);
@@ -45,10 +43,13 @@ public class ObjectPooler : MonoBehaviour {
 	}
 
 	public GameObject SpawnFromPool(string key, Vector3 position, Quaternion rotation) {
+		// check if pool object exists
 		if (!poolDictionary.ContainsKey(key)) {
 			Debug.LogWarning("Pool object '" + key + "' does not exist");
 			return null;
 		}
+
+		// spawn object at position and rotation
 		GameObject spawn = poolDictionary[key].Dequeue();
 		spawn.SetActive(true);
 		spawn.transform.position = position;
@@ -66,6 +67,9 @@ public class ObjectPooler : MonoBehaviour {
 		return spawn;
 	}
 
+	/*
+	 * Disable object and update active pool items count
+	 */
 	public bool DestroyObject(string key, GameObject obj) {
 		if (!activeItems.ContainsKey(key)) {
 			Debug.LogWarning("Pool object '" + key + "' does not exist");

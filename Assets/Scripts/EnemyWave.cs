@@ -18,7 +18,7 @@ public class EnemyWave : MonoBehaviour {
 	[SerializeField][LabelOverride("Spawn Delay")]
 	private float spawnDelaySlow = 1f;
 	[SerializeField][LabelOverride("Num of enemies")]
-	private int MAX_SLOW = 1;
+	private int MAX_SLOW = 1; // number of slow enemies to spawn
 
 	[Space]
 
@@ -30,12 +30,12 @@ public class EnemyWave : MonoBehaviour {
 	[SerializeField][LabelOverride("Spawn Delay")]
 	private float spawnDelayFast = 0.5f;
 	[SerializeField][LabelOverride("Num of enemies")]
-	private int MAX_FAST = 1;
-	#endregion
+	private int MAX_FAST = 1; // number of fast enemies to spawn
 
 	[Space]
 
 	public GameObject waveOverScreen;
+	#endregion
 
 	#region Private Variables
 	private ObjectPooler objectPooler;
@@ -43,7 +43,7 @@ public class EnemyWave : MonoBehaviour {
     private int gridSize = 1;
 	private int enemyCountFast = 0, enemyCountSlow = 0;
     private Vector3 boardSize;
-    private Vector3 enemySpawnPoint;
+    private Vector3 edgeCenter;
 	private Vector3 enemySlowLastPos, enemyFastLastPos;
 	private float prevOffsetFast = -1, prevOffsetSlow = -1;
 	private bool isWaveOver = false;
@@ -59,8 +59,9 @@ public class EnemyWave : MonoBehaviour {
         boardSize = boardBounds.size;
         enemySlowWidth = enemySlow.GetComponentInChildren<Renderer>().bounds.size.x;
         enemyFastWidth = enemyFast.GetComponentInChildren<Renderer>().bounds.size.x;
+
 		// edge center of the board
-        enemySpawnPoint = board.transform.position + new Vector3(boardBounds.size.x / 2f, boardBounds.size.y / 2f, 0);
+        edgeCenter = board.transform.position + new Vector3(boardBounds.size.x / 2f, boardBounds.size.y / 2f, 0);
 	}
 	
 	void Update () {
@@ -71,15 +72,18 @@ public class EnemyWave : MonoBehaviour {
 			SpawnEnemySlow();
 		}
 
-        if (enemyCountFast < MAX_FAST && timerFast > spawnDelayFast + 2 * enemyFast.GetComponent<Enemy>().GetRollSeconds()) { 
+		// spawn enemy after previous enemy has moved + spawn delay
+		if (enemyCountFast < MAX_FAST && timerFast > spawnDelayFast + 2 * enemyFast.GetComponent<Enemy>().GetRollSeconds()) { 
             SpawnEnemyFast();
         }
 
+		// end the wave if last enemy is destroyed
 		if (enemyCountSlow == MAX_SLOW && enemyCountFast == MAX_FAST
 			&& objectPooler.IsPoolActive(enemyFastKey) && objectPooler.IsPoolActive(enemySlowKey)) {
 			isWaveOver = true;
 		}
 
+		// display wave over screen
 		if (isWaveOver) {
 			GameData.isGameOver = true;
 			waveOverScreen.SetActive(true);
@@ -89,7 +93,7 @@ public class EnemyWave : MonoBehaviour {
 
     void SpawnEnemySlow() {
 		// starting from the bottom corner
-		Vector3 bottomCornerPos = enemySpawnPoint + new Vector3(enemySlowWidth / 2f, enemySlowWidth / 2f, enemySlowWidth / 2f - boardSize.z / 2f);
+		Vector3 bottomCornerPos = edgeCenter + new Vector3(enemySlowWidth / 2f, enemySlowWidth / 2f, enemySlowWidth / 2f - boardSize.z / 2f);
 
 		// total number of possible z positions
 		int numOfPositions = ((int)boardSize.z) / gridSize * (int)(gridSize / enemySlowWidth);
@@ -109,7 +113,7 @@ public class EnemyWave : MonoBehaviour {
 
     void SpawnEnemyFast() {
 		// starting from the bottom corner
-		Vector3 bottomCornerPos = enemySpawnPoint + new Vector3(enemyFastWidth/2f, enemyFastWidth / 2f, enemyFastWidth/2f - boardSize.z / 2f);
+		Vector3 bottomCornerPos = edgeCenter + new Vector3(enemyFastWidth/2f, enemyFastWidth / 2f, enemyFastWidth/2f - boardSize.z / 2f);
 		
 		// total number of possible z positions
 		int numOfPositions = ((int) boardSize.z) / gridSize * (int) (gridSize / enemyFastWidth);

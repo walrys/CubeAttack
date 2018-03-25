@@ -53,6 +53,7 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
     }
 
 	protected virtual void Move() {
+		// move pivot point to edge of cube to roll
 		pivot.Translate(-cubeSize / 2, -cubeSize / 2, 0);
 		StartCoroutine(DoRoll(Vector3.forward, rollSpeed));
 	}
@@ -63,7 +64,7 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 		float stepAngle = 90f / steps;
 		Vector3 direction = new Vector3(-axis.z, 0, axis.x);
 
-		// wait if space is occupied by another cube
+		// wait if space in front is occupied by another cube
 		RaycastHit hitInfo;
 		Ray ray = new Ray(transform.position, direction);
 		if (Physics.Raycast(ray, out hitInfo, cubeSize) && hitInfo.collider.tag == "enemy") {
@@ -78,7 +79,7 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 			}
 		}
 
-		// move the targetpoint to the center of the cube
+		// move the targetpoint back to the center of the cube
 		pivot.position = transform.position;
 		pivot.rotation = Quaternion.identity;
 
@@ -90,12 +91,15 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 		timer = 0;
 	}
 	private void OnTriggerEnter(Collider collider) {
+		// handle collision
 		switch (collider.gameObject.tag) {
 			case "wall":
+				// destroy wall block and destroy self
 				Destroy(collider.gameObject);
 				Destroy();
 				break;
 			case "tower":
+				// deal damage to tower and receive damage from tower
 				float received = collider.gameObject.GetComponent<Tower>().GetHealth();
 				float dealt = health;
 				InflictDamage(received);
@@ -114,6 +118,7 @@ public class Enemy : MonoBehaviour, IPooledObject, IAlive {
 
 	protected virtual void Destroy() {
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
+		// increase score when destroyed
 		if(!GameData.isGameOver)
 			GameData.Score += score;
 		ObjectPooler.Instance.SpawnFromPool("SmashedFast", transform.position, transform.rotation);

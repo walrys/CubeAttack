@@ -3,16 +3,22 @@ using System;
 
 public class Board : MonoBehaviour
 {
+	#region Singleton
+	public static Board Instance;
+	private void Awake() {
+		Instance = this;
+	}
+	#endregion
+
     public string prefabPlacementObject = "Tower";
     public GameObject prefabOK;
     public GameObject prefabFail;
 	public LayerMask layerMask;
-
 	public int towerCost = 250;
-    public float gridSize = 1.0f;
 
     // Store which grids are in use
     int[,] usedSpace;
+    float gridSize = 1.0f;
 
     GameObject placementObject = null;
     GameObject areaObject = null;
@@ -20,12 +26,6 @@ public class Board : MonoBehaviour
     bool mouseClick = false;
     Vector3 lastPos;
 
-	#region Singleton
-	public static Board Instance;
-	private void Awake() {
-		Instance = this;
-	}
-	#endregion
 
 	void Start() {
 		// initialize 2D grid array with grid size

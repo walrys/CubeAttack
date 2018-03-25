@@ -12,6 +12,7 @@ public class MenuTowerDelay : MonoBehaviour {
 	}
 
 	private void Start() {
+		// set slider initial value
 		if (GetComponent<Slider>() != null)
 			GetComponent<Slider>().value = GameData.TowerDelaySettings;
 	}

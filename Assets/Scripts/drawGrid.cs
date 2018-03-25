@@ -1,37 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class drawGrid : MonoBehaviour {
-    public int gridSize;
+public class DrawGrid : MonoBehaviour {
     public Material lineMaterial;
-	public Material lineMat;
+
+    int gridSize = 1;
 	int rows, columns;
     float height;
-	// Use this for initialization
+
 	void Start () {
 		rows = (int) GetComponent<Renderer>().bounds.size.x / gridSize;
         columns = (int) GetComponent<Renderer>().bounds.size.z / gridSize;
         height = GetComponent<Renderer>().bounds.size.y / 2.0f;
-    }
+		DrawLines();
+	}
 
-	void OnRenderObject() {
-		lineMaterial.SetPass(0);
-
-		GL.PushMatrix();
-		GL.Begin(GL.LINES);
-		GL.Color(lineMaterial.color);
-		/* Horizontal lines. */
+	void DrawLines() {
+		GameObject grid = new GameObject("Grid");
+		float stroke = 0.01f;
+		// Draw horizontal cube lines
 		for (int i = -rows / 2; i <= rows / 2; i++) {
-			GL.Vertex3(-columns / 2, height, i);
-			GL.Vertex3(columns / 2, height, i);
+			GameObject line = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			line.GetComponent<Renderer>().material = lineMaterial;
+			line.GetComponent<Collider>().enabled = false;
+			line.transform.localScale = new Vector3(stroke + columns, stroke, stroke);
+			line.transform.position = new Vector3(0, 0.51f - stroke/2f, i);
+			line.transform.SetParent(grid.transform);
 		}
-		/* Vertical lines. */
+		// Draw Vertical cube lines
 		for (int i = -columns / 2; i <= columns / 2; i++) {
-			GL.Vertex3(i, height, -rows / 2);
-			GL.Vertex3(i, height, rows / 2);
+			GameObject line = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			line.GetComponent<Renderer>().material = lineMaterial;
+			line.GetComponent<Collider>().enabled = false;
+			line.transform.localScale = new Vector3(stroke, stroke, stroke + rows);
+			line.transform.position = new Vector3(i, 0.51f - stroke/2f, 0);
+			line.transform.SetParent(grid.transform);
 		}
-		GL.End();
-		GL.PopMatrix();
 	}
 }

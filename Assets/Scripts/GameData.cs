@@ -1,12 +1,4 @@
-﻿/*
-* Author Walrys
-* https://walrys.com
-*
-*/
-
-using UnityEngine;
-
-public static class GameData {
+﻿public static class GameData {
 	#region Variables
 	public static bool isGameOver = false;
 	public static int Score = 0;

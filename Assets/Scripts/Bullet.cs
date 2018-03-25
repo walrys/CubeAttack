@@ -1,11 +1,4 @@
-﻿/*
-* Author Walrys
-* https://walrys.com
-*
-*/
-
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 public class Bullet : MonoBehaviour {
@@ -14,13 +7,16 @@ public class Bullet : MonoBehaviour {
 	public float damage = 1f;
 
 	private void OnTriggerEnter(Collider collider) {
-		if (collider.gameObject.tag != "tower" && collider.gameObject.tag != "towerrange") {
+		// let bullet pass through towers and gold
+		if (collider.gameObject.tag != "tower" && collider.gameObject.tag != "towerrange" && collider.gameObject.tag != "gold ") {
+			// deal damage if object is alive
 			IAlive obj = collider.GetComponent<IAlive>();
 			if (obj != null)
 				collider.GetComponent<IAlive>().InflictDamage(damage);
 			Destroy();
 		}
 	}
+
 	public void Destroy() {
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
 	}

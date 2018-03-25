@@ -1,12 +1,6 @@
-﻿/*
-* Author Walrys
-* https://walrys.com
-*
-*/
+﻿using UnityEngine;
 
-using UnityEngine;
-
-
+// interface for all objects with health
 public interface IAlive {
 	void InflictDamage(float dmg);
 }

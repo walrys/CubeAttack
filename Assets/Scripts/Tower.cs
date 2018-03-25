@@ -13,13 +13,13 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 	[SerializeField]
 	string poolKey = "Tower";
 	[SerializeField]
-	int radius = 1; // radius of firing range
+	int fireRadius = 1;
 	[SerializeField]
 	float fireDelay = 2f;
 	[SerializeField][Range(0,10f)]
 	float health = 3f;
 	[SerializeField][Range(0,10f)]
-	float damage = 3f;
+	float bulletDamage = 3f;
 	float bulletSpeed = 20f;
 	[SerializeField]
 	bool showRange = false;
@@ -28,21 +28,21 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 	#endregion
 
 	#region Variables
-	Vector2 pos2d;
+	Vector2 gridPosition;
+	Vector3 bulletStartPos;
 	float countdown = 0;
 	float fireRangeHeight = 0.1f; // height of firing range to be drawn
-	Vector3 bulletStartPos;
 
 	List<GameObject> enemiesInRange;
 	#endregion
 
 	private void Awake() {
-		pos2d = new Vector2(0, 0);
+		gridPosition = new Vector2(0, 0);
 	}
 
 	public void OnObjectSpawn(string key) {
 		// Get tower settings
-		radius = (int) GameData.TowerRangeSettings;
+		fireRadius = (int) GameData.TowerRangeSettings;
 		fireDelay = GameData.TowerDelaySettings;
 
 		// Initialize variables
@@ -50,25 +50,27 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 		Vector3 pos = transform.position;
 		bulletStartPos = new Vector3(pos.x, pos.y + GetComponent<Renderer>().bounds.size.y, pos.z);
 
-		// create a cylinder and add as child
+		// Create a cylinder for range and add as child
 		GameObject fireRange = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-		fireRange.transform.SetParent(transform);
+		fireRange.name = "fireRange";
+		fireRange.tag = "towerrange";
+		fireRange.layer = 8; // Ignore mouse raycast;
 		fireRange.transform.localPosition = Vector3.zero;
+		fireRange.transform.localScale = new Vector3(2 * fireRadius + 0.95f, fireRangeHeight, 2 * fireRadius + 0.95f);
 		fireRange.transform.rotation = Quaternion.identity;
-		fireRange.transform.localScale = new Vector3(2 * radius + 0.95f, fireRangeHeight, 2 * radius + 0.95f);
+		fireRange.transform.SetParent(transform);
 
-		// set meshrenderer visibility
+		// Set visibility of range
 		fireRange.GetComponent<MeshRenderer>().enabled = showRange;
 		if(rangeMaterial)
 			fireRange.GetComponent<MeshRenderer>().material = rangeMaterial;
+
+		// Set trigger collision only
 		fireRange.GetComponent<CapsuleCollider>().isTrigger = true;
+
+		// Remove physics
 		gameObject.AddComponent<Rigidbody>().isKinematic = true;
 		GetComponent<Rigidbody>().useGravity = false;
-		fireRange.tag = "towerrange";
-		fireRange.layer = 8; // Ignore mouse raycast;
-
-		fireRange.name = "fireRange";
-
 		
 		countdown = fireDelay;
 	}
@@ -76,6 +78,7 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 	void Update () {
 		countdown -= Time.deltaTime;
 
+		// fire every fire delay
 		if(countdown <= 0) {
 			Fire();
 			countdown = fireDelay;
@@ -122,7 +125,7 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 ;		if (!GameData.isGameOver && enemy) {
 			GameObject bullet = ObjectPooler.Instance.SpawnFromPool("Bullet", bulletStartPos, Quaternion.identity);
 			bullet.SetActive(true);
-			bullet.GetComponent<Bullet>().damage = damage;
+			bullet.GetComponent<Bullet>().damage = bulletDamage;
 			Vector3 direction = Vector3.Normalize(enemy.transform.position - bullet.transform.position);
 			bullet.GetComponent<Rigidbody>().velocity = direction * bulletSpeed;
 		}
@@ -136,14 +139,14 @@ public class Tower : MonoBehaviour, IAlive, IPooledObject  {
 		}
 	}
 
-
 	public void Destroy() {
-		Board.Instance.FreeGrid(pos2d);
+		// free up grid position on board
+		Board.Instance.FreeGrid(gridPosition);
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
 	}
 
 	public void SetGridPos(Vector2 pos) {
-		pos2d = pos;
+		gridPosition = pos;
 	}
 
 	public float GetHealth() {

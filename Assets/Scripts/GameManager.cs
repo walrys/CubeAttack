@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 	#region Singleton
@@ -19,6 +17,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void GameOver() {
+		// display game over menu after 3 seconds
 		GameData.isGameOver = true;
 		Invoke("ShowGameOverMenu", 3f);
 	}
