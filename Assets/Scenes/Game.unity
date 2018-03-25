@@ -5292,12 +5292,12 @@ MonoBehaviour:
   board: {fileID: 1116154706}
   enemySlowKey: EnemySlow
   enemySlow: {fileID: 1351741042}
-  spawnDelaySlow: 3
+  spawnDelaySlow: 5
   MAX_SLOW: 10
   enemyFastKey: EnemyFast
   enemyFast: {fileID: 167804856}
-  spawnDelayFast: 0
-  MAX_FAST: 50
+  spawnDelayFast: 1
+  MAX_FAST: 0
   waveOverScreen: {fileID: 549325943}
 --- !u!1 &1531624973 stripped
 GameObject:

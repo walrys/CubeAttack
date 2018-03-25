@@ -22,16 +22,6 @@ public class Bullet : MonoBehaviour {
 		}
 	}
 	public void Destroy() {
-		StartCoroutine(Fade());
-	}
-
-	IEnumerator Fade() {
-		for (float f = 1f; f >= 0; f -= 0.1f) {
-			Vector3 scale = transform.localScale;
-			transform.localScale = f * scale;
-			yield return new WaitForSeconds(.005f);
-		}
-
 		ObjectPooler.Instance.DestroyObject(poolKey, gameObject);
 	}
 }

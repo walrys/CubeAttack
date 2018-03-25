@@ -45,6 +45,7 @@ public class EnemyWave : MonoBehaviour {
     private Vector3 boardSize;
     private Vector3 enemySpawnPoint;
 	private Vector3 enemySlowLastPos, enemyFastLastPos;
+	private float prevOffsetFast = -1, prevOffsetSlow = -1;
 	private bool isWaveOver = false;
 	#endregion
 	
@@ -58,19 +59,20 @@ public class EnemyWave : MonoBehaviour {
         boardSize = boardBounds.size;
         enemySlowWidth = enemySlow.GetComponentInChildren<Renderer>().bounds.size.x;
         enemyFastWidth = enemyFast.GetComponentInChildren<Renderer>().bounds.size.x;
-        enemySpawnPoint = board.transform.position + new Vector3(boardBounds.size.x / 2.0f, boardBounds.size.y / 2.0f, 0.5f);
+		// edge center of the board
+        enemySpawnPoint = board.transform.position + new Vector3(boardBounds.size.x / 2f, boardBounds.size.y / 2f, 0);
 	}
 	
 	void Update () {
         timerSlow += Time.deltaTime;
         timerFast += Time.deltaTime;
 		// spawn enemy after previous enemy has moved + spawn delay
-        if (enemyCountSlow < MAX_SLOW && timerSlow > spawnDelaySlow + 2 * enemySlow.GetComponent<Enemy>().GetRollSeconds()) {
-			spawnEnemySlow();
+        if (enemyCountSlow < MAX_SLOW && timerSlow > spawnDelaySlow + enemySlow.GetComponent<Enemy>().GetRollSeconds()) {
+			SpawnEnemySlow();
 		}
 
         if (enemyCountFast < MAX_FAST && timerFast > spawnDelayFast + 2 * enemyFast.GetComponent<Enemy>().GetRollSeconds()) { 
-            spawnEnemyFast();
+            SpawnEnemyFast();
         }
 
 		if (enemyCountSlow == MAX_SLOW && enemyCountFast == MAX_FAST
@@ -85,24 +87,42 @@ public class EnemyWave : MonoBehaviour {
 		}
     }
 
-    void spawnEnemySlow() {
-        Vector3 startPosition = enemySpawnPoint + new Vector3(enemySlowWidth/2.0f, enemySlowWidth/ 2.0f, (int)Random.Range(-boardSize.z/2f, boardSize.z/2f-1) * gridSize);
-		while(enemySlowLastPos == startPosition) {
-			startPosition = enemySpawnPoint + new Vector3(enemySlowWidth / 2.0f, enemySlowWidth / 2.0f, (int)Random.Range(-boardSize.z / 2f, boardSize.z / 2f-1) * gridSize);
+    void SpawnEnemySlow() {
+		// starting from the bottom corner
+		Vector3 bottomCornerPos = enemySpawnPoint + new Vector3(enemySlowWidth / 2f, enemySlowWidth / 2f, enemySlowWidth / 2f - boardSize.z / 2f);
+
+		// total number of possible z positions
+		int numOfPositions = ((int)boardSize.z) / gridSize * (int)(gridSize / enemySlowWidth);
+
+		// pick random spawn position along edge
+		float zOffset = Random.Range(0, numOfPositions);
+		while (zOffset == prevOffsetSlow) {
+			zOffset = Random.Range(0, numOfPositions);
 		}
-		enemySlowLastPos = startPosition;
-		objectPooler.SpawnFromPool(enemySlowKey, startPosition, transform.rotation);
+		prevOffsetSlow = zOffset;
+		Vector3 spawnPosition = bottomCornerPos + Vector3.forward * zOffset * enemySlowWidth;
+
+		objectPooler.SpawnFromPool(enemySlowKey, spawnPosition, transform.rotation);
 		enemyCountSlow++;
 		timerSlow = 0;
 	}
 
-    void spawnEnemyFast() {
-        Vector3 startPosition = enemySpawnPoint + new Vector3(enemyFastWidth/2.0f, enemyFastWidth / 2.0f, (int)Random.Range(-boardSize.z/2f, boardSize.z/ 2f) * gridSize);
-		while (enemyFastLastPos == startPosition) {
-			startPosition = enemySpawnPoint + new Vector3(enemyFastWidth / 2.0f, enemyFastWidth / 2.0f, (int)Random.Range(-boardSize.z / 2f, boardSize.z / 2f) * gridSize);
+    void SpawnEnemyFast() {
+		// starting from the bottom corner
+		Vector3 bottomCornerPos = enemySpawnPoint + new Vector3(enemyFastWidth/2f, enemyFastWidth / 2f, enemyFastWidth/2f - boardSize.z / 2f);
+		
+		// total number of possible z positions
+		int numOfPositions = ((int) boardSize.z) / gridSize * (int) (gridSize / enemyFastWidth);
+
+		// pick random spawn position along edge
+		float zOffset = Random.Range(0, numOfPositions);
+		while (zOffset == prevOffsetFast) {
+			zOffset = Random.Range(0, numOfPositions);
 		}
-		enemyFastLastPos = startPosition;
-		objectPooler.SpawnFromPool(enemyFastKey, startPosition, transform.rotation);
+		prevOffsetFast = zOffset;
+		Vector3 spawnPosition = bottomCornerPos + Vector3.forward * zOffset * enemyFastWidth;
+
+		objectPooler.SpawnFromPool(enemyFastKey, spawnPosition, transform.rotation);
 		enemyCountFast++;
 		timerFast = 0;
 	}
